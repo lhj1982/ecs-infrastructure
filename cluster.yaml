@@ -1,0 +1,21 @@
+# Used to create a cluster.
+# Typically, to simplify operational burden, teams should provision a single cluster per account.
+# Multiple ECS services can run in a single cluster
+
+---
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  ClusterName:
+    Type: String
+    Description: Name of the ECS Cluster
+
+Resources:
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref ClusterName
+
+Outputs:
+  ClusterName:
+      Value: !Ref Cluster

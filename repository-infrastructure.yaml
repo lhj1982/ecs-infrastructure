@@ -1,0 +1,85 @@
+# This template is meant to be used once per app, per account.
+# It sets up the basic infrastructure needed to run a branch-based
+# ECS service deployment.
+
+# CAVEAT: This template produces an ALB dedicated to serve a single app.
+# This does _not_ reflect our current best recommendation, which is for each team to set up an ALB for (test|prod).
+# Future pipelines will not be compatible with this when the service-infrastructure and team templates are refactored.
+
+# Note that the cluster is not included, since teams should only use
+# one cluster to run multiple apps / services.
+
+# The ImageName can either be specified by the user, or constructed from a ${TeamPrefix}/${AppName} combination.
+
+---
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  TeamPrefix:
+    Type: String
+    Description: |
+      A unique prefix for all ECS services used by your team. All subsequent
+      resources you create should use this prefix if you want to be able to operate them.
+      This is required if you do not provide the ImageName parameter.
+  AppName:
+    Type: String
+    Description: |
+      The name of the application you want to deploy. This is required if you do not provide ImageName parameter.
+  ImageName:
+    Default: ""
+    Type: String
+    Description: |
+      The desired image name. This will be used as the name of the ECR repository if specified. Keep in mind that
+      you are responsible for adding your team prefix if this template is being deployed via your team's ECS role, as
+      IAM permissions for the team role are scoped to your team prefix for ECR.
+  RepoLifecyclePolicyText:
+    Type: String
+    Description: Stringified JSON of AWS LifeCyclePolicy rules that define under what circumstances repository images will be cleaned up
+    Default: |
+      {
+        "rules": [
+          {
+            "rulePriority": 10,
+            "description": "Deletes untagged images from the repo",
+            "selection": {
+              "tagStatus": "untagged",
+              "countType": "sinceImagePushed",
+              "countUnit": "days",
+              "countNumber": 1
+            },
+            "action": {
+              "type": "expire"
+            }
+          }
+        ]
+      }
+
+Conditions:
+  ImageNamePresent: !Not [!Equals [!Ref ImageName, ""]]
+
+Resources:
+  Repository:
+    Type: "AWS::ECR::Repository"
+    Properties:
+      RepositoryName: !If
+        - ImageNamePresent
+        - !Ref ImageName
+        - !Sub "${TeamPrefix}/${AppName}"
+      LifecyclePolicy:
+        LifecyclePolicyText: !Ref RepoLifecyclePolicyText
+
+Outputs:
+  EcrRepositoryName:
+    Description: The name of the ECR repository to be used by Docker when tagging / pushing
+    Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ImageName}
+  EcrRepositoryArn:
+    Value: !GetAtt Repository.Arn
+  ImageName:
+    Description: The AppName param that was used as an input when running this stack
+    Value: !If
+       - ImageNamePresent
+       - !Ref ImageName
+       - !Sub "${TeamPrefix}/${AppName}"
+  AppName:
+    Description: The name of the application
+    Value: !Ref AppName

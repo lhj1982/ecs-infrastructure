@@ -1,0 +1,115 @@
+@Library(['cop-pipeline-bootstrap']) _
+loadPipelines()
+
+String appName = "hello-logger"
+String teamName = "ndx"
+
+def config = [
+  usePraDispatch: false,
+  tags: [
+    'Name': appName,
+    'costcenter': '104431',
+    'classification': 'Bronze',
+    'nike-distributionlist': 'Application.Automation.Users@nike.com',
+    'nike-owner': 'joshua.stein@nike.com',
+    'nike-application': appName,
+    'nike-department': 'arch - cloud acceleration',
+    'nike-distributionlist': 'Application.Automation.Users@nike.com',
+    'nike-owner': 'joshua.stein@nike.com',
+    'nike-domain': 'architecture',
+  ],
+  branchMatcher: [ECS_INFRASTRUCTURE: ['manual']],
+  qma: [ configFile: 'ecs-infrastructure/quality-config.yaml', 'qma_env': "test" ],
+
+  deploymentEnvironment: [
+    rolesInfrastructure: [
+      deployFlow: [
+        ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
+      ],
+      aws: [
+        awsRole: "cop-pipeline.cloudformation",
+        accountId: "299281322080",
+        region: "us-west-2",
+      ],
+      cf: [
+        stackName: "${teamName}-roles",
+        templateFile: "ecs-infrastructure/roles.yaml",
+        parameters: [
+          BmxBaseRoleArns: 'arn:aws:iam::046979685931:role/brewmaster/base/brewmaster-base-pipelines,arn:aws:iam::046979685931:role/brewmaster/base/brewmaster-base-regina',
+          TeamPrefix: teamName,
+          VpcId: 'vpc-0b5838cd4ea21a901',
+        ]
+      ],
+      tags: [
+        'nike-environment': 'test',
+      ],
+    ],
+    clusterInfrastructure: [
+      deployFlow: [
+        ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
+      ],
+      aws: [
+        awsRole: "cop-pipeline.cloudformation",
+        accountId: "299281322080",
+        region: "us-west-2",
+      ],
+      cf: [
+        stackName: "${teamName}-cluster",
+        templateFile: "ecs-infrastructure/cluster.yaml",
+        parameters: [
+          ClusterName: "${teamName}-${appName}",
+        ],
+      ],
+      tags: [
+        'nike-environment': 'test',
+      ],
+    ],
+    loadBalancerInfraStructure: [
+      deployFlow: [
+        ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
+      ],
+      aws: [
+        awsRole: "cop-pipeline.cloudformation",
+        accountId: "299281322080",
+        region: "us-west-2",
+      ],
+      cf: [
+        stackName: "${teamName}-load-balancer",
+        templateFile: "ecs-infrastructure/load-balancer.yaml",
+        parameters: [
+          TeamPrefix: "${teamName}",
+          AppName: "${appName}",
+          SubnetIds: 'subnet-0e84c716c50819874, subnet-0fde53e95d25a822d, subnet-0865f4d16d16a9aa3',
+          VpcId: 'vpc-0b5838cd4ea21a901',
+          SecurityGroups: 'sg-0db124814f046a61a'
+        ],
+      ],
+      tags: [
+        'nike-environment': 'test',
+      ],
+    ],
+    singleECRRepo: [
+      deployFlow: [
+        ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
+      ],
+      aws: [
+        awsRole: "cop-pipeline.cloudformation",
+        accountId: "299281322080",
+        region: "us-west-2",
+      ],
+      cf: [
+        stackName: "${teamName}-ecr-repository",
+        templateFile: "ecs-infrastructure/repository-infrastructure.yaml",
+        parameters: [
+          TeamPrefix: teamName,
+          AppName: appName
+        ],
+      ],
+      tags: [
+        'nike-environment': 'test',
+      ],
+    ],
+  ],
+]
+
+cloudformationPipeline(config)

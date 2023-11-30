@@ -1,0 +1,211 @@
+# These resources are meant to be created once per-team, per-account.
+# They can be re-used for multiple ECS clusters and services owned by a
+# single development team.
+
+# If you are a Commerce account, you should have your TA review and
+# apply this template as a nested stack in team-owned repository.
+
+---
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  TeamPrefix:
+    Type: String
+    AllowedPattern: "[a-zA-Z0-9-]{3,26}"
+    Description: |
+      A unique prefix for all ECS services used by your team. All subsequent
+      resources you create should use this prefix if you want to be able to operate them.
+  BmxBaseRoleArns:
+    Type: CommaDelimitedList
+  VpcId:
+    Type: String
+
+Resources:
+  ###
+  # IAM
+  ###
+
+  # This role is used by Amazon to do Fargate-related ECS actions
+  TaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${TeamPrefix}-TaskExecutionRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+
+
+  # This role is used by the BMX instance to perform ecs-related operations.
+  BrewmasterEcsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${TeamPrefix}-BrewmasterEcsRole"
+      Policies:
+        -
+          PolicyName: CloudFormation
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - cloudformation:*
+              Effect: Allow
+              Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${TeamPrefix}*"
+        -
+          PolicyName: ECS
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Action:
+                  - ecs:StartTask
+                  - ecs:StopTask
+                  - ecs:RunTask
+                  - ecs:DescribeTasks
+                  - ecs:ListTasks
+                  - ecs:PutAttributes
+                  - ecs:StartTelemetrySession
+                  - ecs:UpdateContainerAgent
+                  - ecs:UpdateContainerInstancesState
+                  - ecs:DeleteAttributes
+                Effect: Allow
+                Resource: "*"
+                Condition:
+                  StringLike:
+                    ecs:cluster: !Sub "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${TeamPrefix}*"
+              -
+                Action:
+                  - ecs:ListAttributes
+                  - ecs:ListContainerInstances
+                  - ecs:RegisterContainerInstance
+                  - ecs:SubmitContainerStateChange
+                  - ecs:SubmitTaskStateChange
+                  - ecs:DeleteCluster
+                  - ecs:DeregisterContainerInstance
+                Effect: Allow
+                Resource: !Sub "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${TeamPrefix}*"
+              - # AWS Does not list these as having resource restrictions or condition keys. Wildcard is the only way
+                Action:
+                  - ecs:ListServices
+                  - ecs:DescribeServices
+                  - ecs:CreateService
+                  - ecs:UpdateService
+                  - ecs:DeleteService
+                  - ecs:CreateCluster
+                  - ecs:ListTaskDefinitions
+                  - ecs:ListTaskDefinitionFamilies
+                  - ecs:DescribeTaskDefinition
+                  - ecs:RegisterTaskDefinition
+                  - ecs:DeregisterTaskDefinition
+                  - ecs:DescribeClusters
+                  - ecs:DiscoverPollEndpoint
+                  - ecs:Poll
+                  - ecs:ListTagsForResource
+                  - ecs:TagResource
+                  - ecs:UntagResource
+                Effect: Allow
+                Resource: "*"
+        -
+          PolicyName: ECR
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Action: 'ecr:*'
+                Effect: Allow
+                Resource: !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${TeamPrefix}*"
+              -
+                Action: 'ecr:CreateRepository'
+                Effect: Allow
+                Resource: '*'
+              -
+                Action: 'ecr:GetAuthorizationToken'
+                Effect: Allow
+                Resource: '*'
+        -
+          PolicyName: LoadBalancing
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Action:
+                  - elasticloadbalancing:*
+                  - elasticloadbalancingv2:*
+                Effect: Allow
+                Resource:
+                  - !Sub "arn:aws:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:targetgroup/${TeamPrefix}*"
+                  - !Sub "arn:aws:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:listener/app/${TeamPrefix}*"
+                  - !Sub "arn:aws:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:listener-rule/app/${TeamPrefix}*"
+                  - !Sub "arn:aws:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:loadbalancer/app/${TeamPrefix}*"
+              -
+                Action:
+                  - elasticloadbalancing:DescribeLoadBalancers
+                  - elasticloadbalancing:DescribeTargetGroups
+                  - elasticloadbalancing:DescribeListeners
+                  - elasticloadbalancing:DescribeRules
+                  - elasticloadbalancing:DescribeTargetGroupAttributes
+                  - elasticloadbalancing:DescribeTargetHealth
+                  - elasticloadbalancing:DescribeTags
+                Effect: Allow
+                Resource: "*"
+        -
+          PolicyName: IAM
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Action: iam:PassRole
+                Effect: Allow
+                Resource: !GetAtt TaskExecutionRole.Arn
+                Condition:
+                  StringLike:
+                    iam:PassedToService: ecs-tasks.amazonaws.com
+        -
+          PolicyName: VPC
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Action:
+                  - ec2:DescribeVpcs
+                  - ec2:DescribeSubnets
+                  - ec2:DescribeSecurityGroups
+                Effect: Allow
+                Resource: "*"
+        -
+          PolicyName: Logging
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Action:
+                  - logs:*
+                Effect: Allow
+                Resource: "*"
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref BmxBaseRoleArns
+            Action: 'sts:AssumeRole'
+
+
+Outputs:
+  TeamPrefix:
+    Description: TeamPrefix input variable. Can be passed down down to service pipelines
+    Value: !Ref TeamPrefix
+  ExecutionRoleArn:
+    Description: Arn of the service execution role
+    Value: !GetAtt TaskExecutionRole.Arn
+  BrewmasterEcsRoleArn:
+    Description: |
+      Arn of the ECS role assumed by brewmaster to perform deployment-related operation for ECS services
+      and related resources.
+    Value: !GetAtt BrewmasterEcsRole.Arn
