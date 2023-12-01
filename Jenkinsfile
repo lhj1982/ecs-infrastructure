@@ -26,7 +26,7 @@ def config = [
                 ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
             ],
             aws: [
-                awsRole: "NIKE.cicd.deploy",
+                awsRole: "NIKE.cicd.tool",
                 accountId: "439314357471",
                 region: "cn-northwest-1",
             ],
