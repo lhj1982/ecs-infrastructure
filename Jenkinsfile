@@ -34,7 +34,7 @@ def config = [
                 stackName: "webb-portal-ecs-roles-infra-test",
                 templateFile: "roles.yaml",
                 parameters: [
-                    BmxBaseRoleArns: 'arn:aws:iam::046979685931:role/brewmaster/base/brewmaster-base-gc-cdn-antibots',
+                    BmxBaseRoleArns: 'arn:aws-cn:iam::108851027208:role/brewmaster-base-gc-cdn-antibots',
                     CreateIamForEc2BackedEcsClusters: 'false',
                     HostedZoneDnsBase: 'nike.internal',
                     TeamPrefix: 'gc-cdn-antibots',
