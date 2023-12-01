@@ -10,7 +10,7 @@ def config = [
         'classification': 'Silver',
         'email': 'lst-gc-cdn-antibots.admin@nike.com',
         'owner': 'frank.zhao@nike.com',
-        'nike-application': '',
+        'nike-application': 'ecs-infrastructure',
         'nike-department': 'Web Eng - nike.com Cloud Capability',
         'nike-domain': 'gc-cdn-antibots',
     ],
@@ -26,7 +26,7 @@ def config = [
                 ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
             ],
             aws: [
-                awsRole: "arn:aws-cn:iam::439314357471:role/NIKE.cicd.deploy",
+                awsRole: "NIKE.cicd.deploy",
                 accountId: "439314357471",
                 region: "cn-northwest-1",
             ],
