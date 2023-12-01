@@ -6,13 +6,13 @@ def config = [
     usePraDispatch: false,
     tags: [
         'Name': 'webb-frontend-ecs-test',
-        'costcenter': '',
-        'classification': '',
-        'email': '',
-        'owner': '',
+        'costcenter': '104420',
+        'classification': 'Silver',
+        'email': 'lst-gc-cdn-antibots.admin@nike.com',
+        'owner': 'frank.zhao@nike.com',
         'nike-application': '',
-        'nike-department': '',
-        'nike-domain': '',
+        'nike-department': 'Web Eng - nike.com Cloud Capability',
+        'nike-domain': 'gc-cdn-antibots',
     ],
     branchMatcher: [
       RELEASE         : ['main'],
@@ -26,19 +26,19 @@ def config = [
                 ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
             ],
             aws: [
-                awsRole: "<provided aws role>",
-                accountId: "<your accountId>",
-                region: "<specified region>",
+                awsRole: "arn:aws-cn:iam::439314357471:role/NIKE.cicd.deploy",
+                accountId: "439314357471",
+                region: "cn-northwest-1",
             ],
             cf: [
-                stackName: "",
+                stackName: "webb-portal-ecs-roles-infra-test",
                 templateFile: "roles.yaml",
                 parameters: [
-                    BmxBaseRoleArns: '<run /bmx info ... in #auto-bot>,<additional roles separated by comma if needed>',
+                    BmxBaseRoleArns: 'arn:aws:iam::046979685931:role/brewmaster/base/brewmaster-base-gc-cdn-antibots',
                     CreateIamForEc2BackedEcsClusters: 'false',
                     HostedZoneDnsBase: 'nike.internal',
-                    TeamPrefix: '<used throughout the infrastructure>',
-                    VpcId: '',
+                    TeamPrefix: 'gc-cdn-antibots',
+                    VpcId: 'vpc-0f9779e69a780c25e',
                 ]
             ],
             clusterInfrastructure: [
