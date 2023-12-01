@@ -5,14 +5,15 @@ loadPipelines()
 def config = [
     usePraDispatch: false,
     tags: [
-        'Name': 'webb-frontend-ecs-test',
-        'costcenter': '104420',
-        'classification': 'Silver',
-        'email': 'lst-gc-cdn-antibots.admin@nike.com',
-        'owner': 'frank.zhao@nike.com',
-        'nike-application': 'ecs-infrastructure',
-        'nike-department': 'Web Eng - nike.com Cloud Capability',
+        'Name': 'ecs-infrastructure',
+        'classification': 'Gold',
+        'email': 'bradley.shao@nike.com',
+        'owner': 'gc-cdn-antibots',
+        'nike-department': 'platform engineering - gc launch',
         'nike-domain': 'gc-cdn-antibots',
+        'nike-application': 'ecs-infrastructure',
+        'nike-distributionlist': 'Lst-gc-cdn-antibots.admin@nike.com',
+        'nike-owner': 'frank.zhao@nike.com',
     ],
     branchMatcher: [
       RELEASE         : ['main'],
