@@ -27,8 +27,8 @@ def config = [
                 ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
             ],
             aws: [
-                awsRole: "NIKE.cicd.tool",
-                accountId: "439314357471",
+                role: "NIKE.cicd.tool",
+                roleAccount: "439314357471",
                 region: "cn-northwest-1",
             ],
             cf: [
@@ -36,9 +36,9 @@ def config = [
                 templateFile: "roles.yaml",
                 parameters: [
                     BmxBaseRoleArns: 'arn:aws-cn:iam::108851027208:role/brewmaster-base-gc-cdn-antibots',
-                    CreateIamForEc2BackedEcsClusters: 'false',
+                    CreateIamForEc2BackedEcsClusters: 'true',
                     HostedZoneDnsBase: 'nike.internal',
-                    TeamPrefix: 'gc-cdn-antibots',
+                    TeamPrefix: 'gcantibots',
                     VpcId: 'vpc-0f9779e69a780c25e',
                 ]
             ],
