@@ -41,23 +41,6 @@ def config = [
                     VpcId: 'vpc-0f9779e69a780c25e',
                 ]
             ],
-            clusterInfrastructure: [
-                deployFlow: [
-                    ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
-                ],
-                aws: [
-                    role: "NIKE.cicd.tool",
-                    roleAccount: "439314357471",
-                    region: "cn-northwest-1",
-                ],
-                cf: [
-                    stackName: "webb-portal-ecs-cluster-infra-test",
-                    templateFile: "cluster.yaml",
-                    parameters: [
-                        ClusterName: 'webb-portal-frontend-cluster',
-                    ],
-                ],
-            ],
             loadBalancerInfraStructure: [
                 deployFlow: [
                     ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
@@ -80,6 +63,28 @@ def config = [
                 ],
             ],
         ],
+        clusterInfrastructure: [
+                deployFlow: [
+                    ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
+                ],
+                aws: [
+                    role: "NIKE.cicd.tool",
+                    roleAccount: "439314357471",
+                    region: "cn-northwest-1",
+                ],
+                cf: [
+                    stackName: "webb-portal-ecs-cluster-infra-test",
+                    templateFile: "new-cluster.yaml",
+                    parameters: [
+                        ECSClusterName: 'webb-portal-frontend-cluster-test',
+                        IamRoleInstanceProfile: 'arn:aws-cn:iam::439314357471:instance-profile/ecsInstanceRole',
+                        LatestECSOptimizedAMI: '/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id',
+                        SecurityGroupIds: 'sg-0676976675a94e49e',
+                        SubnetIds: ['subnet-075e204cb71470d70','subnet-0e64f859c59876536','subnet-0f02dd76225273efa'],
+                        VpcId: 'vpc-0f9779e69a780c25e'
+                    ],
+                ],
+            ],
     ],
 ]
 
