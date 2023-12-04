@@ -14,6 +14,7 @@ def config = [
         'nike-application': 'ecs-infrastructure',
         'nike-distributionlist': 'Lst-gc-cdn-antibots.admin@nike.com',
         'nike-owner': 'frank.zhao@nike.com',
+        'nike-environment': 'test'
     ],
     branchMatcher: [
       RELEASE         : ['main'],
