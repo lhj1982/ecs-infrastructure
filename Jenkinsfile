@@ -37,8 +37,8 @@ def config = [
                 templateFile: "roles.yaml",
                 parameters: [
                     BmxBaseRoleArns: 'arn:aws-cn:iam::108851027208:role/brewmaster-base-gc-cdn-antibots',
-                    CreateIamForEc2BackedEcsClusters: 'true',
-                    HostedZoneDnsBase: 'nike.internal',
+                    // CreateIamForEc2BackedEcsClusters: 'true',
+                    // HostedZoneDnsBase: 'nike.internal',
                     TeamPrefix: 'gcantibots',
                     VpcId: 'vpc-0f9779e69a780c25e',
                 ]
