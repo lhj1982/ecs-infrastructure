@@ -56,7 +56,7 @@ Resources:
               Action:
                 - cloudformation:*
               Effect: Allow
-              Resource: !Sub "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${TeamPrefix}*"
+              Resource: !Sub "arn:aws-cn:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${TeamPrefix}*"
         -
           PolicyName: ECS
           PolicyDocument:
@@ -78,7 +78,7 @@ Resources:
                 Resource: "*"
                 Condition:
                   StringLike:
-                    ecs:cluster: !Sub "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${TeamPrefix}*"
+                    ecs:cluster: !Sub "arn:aws-cn:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${TeamPrefix}*"
               -
                 Action:
                   - ecs:ListAttributes
@@ -89,7 +89,7 @@ Resources:
                   - ecs:DeleteCluster
                   - ecs:DeregisterContainerInstance
                 Effect: Allow
-                Resource: !Sub "arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${TeamPrefix}*"
+                Resource: !Sub "arn:aws-cn:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${TeamPrefix}*"
               - # AWS Does not list these as having resource restrictions or condition keys. Wildcard is the only way
                 Action:
                   - ecs:ListServices
@@ -119,7 +119,7 @@ Resources:
               -
                 Action: 'ecr:*'
                 Effect: Allow
-                Resource: !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${TeamPrefix}*"
+                Resource: !Sub "arn:aws-cn:ecr:${AWS::Region}:${AWS::AccountId}:repository/${TeamPrefix}*"
               -
                 Action: 'ecr:CreateRepository'
                 Effect: Allow
@@ -139,10 +139,10 @@ Resources:
                   - elasticloadbalancingv2:*
                 Effect: Allow
                 Resource:
-                  - !Sub "arn:aws:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:targetgroup/${TeamPrefix}*"
-                  - !Sub "arn:aws:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:listener/app/${TeamPrefix}*"
-                  - !Sub "arn:aws:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:listener-rule/app/${TeamPrefix}*"
-                  - !Sub "arn:aws:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:loadbalancer/app/${TeamPrefix}*"
+                  - !Sub "arn:aws-cn:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:targetgroup/${TeamPrefix}*"
+                  - !Sub "arn:aws-cn:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:listener/app/${TeamPrefix}*"
+                  - !Sub "arn:aws-cn:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:listener-rule/app/${TeamPrefix}*"
+                  - !Sub "arn:aws-cn:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:loadbalancer/app/${TeamPrefix}*"
               -
                 Action:
                   - elasticloadbalancing:DescribeLoadBalancers
