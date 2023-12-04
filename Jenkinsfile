@@ -64,46 +64,8 @@ def config = [
                 ],   
             ],    
         ],
-        loadBalancerInfraStructure: [
-            deployFlow: [
-                ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
-            ],
-            aws: [
-                awsRole: "<provided aws role>",
-                accountId: "<your accountId>",
-                region: "<specified region>",
-            ],
-            cf: [
-                stackName: "<team-name>-<stack-name>",
-                templateFile: "ecs-load-balancer.yaml",
-                parameters: [
-                    TeamPrefix: '<team-name>',
-                    AppName: '<suffix for target group and LB>',
-                    SubnetIds: 'subnet-0ad62cef2459915af,subnet-07aa814bbf0c156f9,subnet-027486f998ae8c920',
-                    VpcId: 'vpc-0fc24accfb15de36d',
-                    SecurityGroups: ''
-                ],
-            deployFlow: [
-                ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
-            ],
-            aws: [
-                awsRole: "<provided aws role>",
-                accountId: "<your accountId>",
-                region: "<specified region>",
-            ],
-            cf: [
-                stackName: "<team-name>-<stack-name>",
-                templateFile: "ecs-load-balancer.yaml",
-                parameters: [
-                    TeamPrefix: '<team-name>',
-                    AppName: '<suffix for target group and LB>',
-                    SubnetIds: 'subnet-0ad62cef2459915af,subnet-07aa814bbf0c156f9,subnet-027486f998ae8c920',
-                    VpcId: 'vpc-0fc24accfb15de36d',
-                    SecurityGroups: ''
-                ],
-            ],
-        ],
     ],
 ]
+
 
 cloudformationPipeline(config)
