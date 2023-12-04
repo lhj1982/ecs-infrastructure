@@ -37,8 +37,6 @@ def config = [
                 templateFile: "roles.yaml",
                 parameters: [
                     BmxBaseRoleArns: 'arn:aws-cn:iam::108851027208:role/brewmaster-base-gc-cdn-antibots',
-                    // CreateIamForEc2BackedEcsClusters: 'true',
-                    // HostedZoneDnsBase: 'nike.internal',
                     TeamPrefix: 'gcantibots',
                     VpcId: 'vpc-0f9779e69a780c25e',
                 ]
@@ -48,15 +46,15 @@ def config = [
                     ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
                 ],
                 aws: [
-                    awsRole: "<provided aws role>",
-                    accountId: "<your accountId>",
-                    region: "<specified region>",
+                    role: "NIKE.cicd.tool",
+                    roleAccount: "439314357471",
+                    region: "cn-northwest-1",
                 ],
                 cf: [
-                    stackName: "<team-name>-<stack-name>",
-                    templateFile: "regression/infrastructure/ecs/ecs-cluster.yaml",
+                    stackName: "webb-portal-ecs-cluster-infra-test",
+                    templateFile: "cluster.yaml",
                     parameters: [
-                        ClusterName: '<team-name>-<cluster-name>',
+                        ClusterName: 'webb-portal-frontend-cluster',
                     ],
                 ],
             ],
