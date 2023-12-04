@@ -41,50 +41,68 @@ def config = [
                     VpcId: 'vpc-0f9779e69a780c25e',
                 ]
             ],
-            loadBalancerInfraStructure: [
-                deployFlow: [
-                    ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
+        ],
+        clusterInfrastructure: [
+            deployFlow: [
+                ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
+            ],
+            aws: [
+                role: "NIKE.cicd.tool",
+                roleAccount: "439314357471",
+                region: "cn-northwest-1",
+            ],
+            cf: [
+                stackName: "webb-portal-ecs-cluster-infra-test",
+                templateFile: "new-cluster.yaml",
+                parameters: [
+                    ECSClusterName: 'webb-portal-frontend-cluster-test',
+                    IamRoleInstanceProfile: 'arn:aws-cn:iam::439314357471:instance-profile/ecsInstanceRole',
+                    LatestECSOptimizedAMI: '/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id',
+                    SecurityGroupIds: 'sg-0676976675a94e49e',
+                    SubnetIds: ['subnet-075e204cb71470d70','subnet-0e64f859c59876536','subnet-0f02dd76225273efa'],
+                    VpcId: 'vpc-0f9779e69a780c25e'
+                ],   
+            ],    
+        ],
+        loadBalancerInfraStructure: [
+            deployFlow: [
+                ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
+            ],
+            aws: [
+                awsRole: "<provided aws role>",
+                accountId: "<your accountId>",
+                region: "<specified region>",
+            ],
+            cf: [
+                stackName: "<team-name>-<stack-name>",
+                templateFile: "ecs-load-balancer.yaml",
+                parameters: [
+                    TeamPrefix: '<team-name>',
+                    AppName: '<suffix for target group and LB>',
+                    SubnetIds: 'subnet-0ad62cef2459915af,subnet-07aa814bbf0c156f9,subnet-027486f998ae8c920',
+                    VpcId: 'vpc-0fc24accfb15de36d',
+                    SecurityGroups: ''
                 ],
-                aws: [
-                    awsRole: "<provided aws role>",
-                    accountId: "<your accountId>",
-                    region: "<specified region>",
-                ],
-                cf: [
-                    stackName: "<team-name>-<stack-name>",
-                    templateFile: "ecs-load-balancer.yaml",
-                    parameters: [
-                        TeamPrefix: '<team-name>',
-                        AppName: '<suffix for target group and LB>',
-                        SubnetIds: 'subnet-0ad62cef2459915af,subnet-07aa814bbf0c156f9,subnet-027486f998ae8c920',
-                        VpcId: 'vpc-0fc24accfb15de36d',
-                        SecurityGroups: ''
-                    ],
+            deployFlow: [
+                ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
+            ],
+            aws: [
+                awsRole: "<provided aws role>",
+                accountId: "<your accountId>",
+                region: "<specified region>",
+            ],
+            cf: [
+                stackName: "<team-name>-<stack-name>",
+                templateFile: "ecs-load-balancer.yaml",
+                parameters: [
+                    TeamPrefix: '<team-name>',
+                    AppName: '<suffix for target group and LB>',
+                    SubnetIds: 'subnet-0ad62cef2459915af,subnet-07aa814bbf0c156f9,subnet-027486f998ae8c920',
+                    VpcId: 'vpc-0fc24accfb15de36d',
+                    SecurityGroups: ''
                 ],
             ],
         ],
-        clusterInfrastructure: [
-                deployFlow: [
-                    ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
-                ],
-                aws: [
-                    role: "NIKE.cicd.tool",
-                    roleAccount: "439314357471",
-                    region: "cn-northwest-1",
-                ],
-                cf: [
-                    stackName: "webb-portal-ecs-cluster-infra-test",
-                    templateFile: "new-cluster.yaml",
-                    parameters: [
-                        ECSClusterName: 'webb-portal-frontend-cluster-test',
-                        IamRoleInstanceProfile: 'arn:aws-cn:iam::439314357471:instance-profile/ecsInstanceRole',
-                        LatestECSOptimizedAMI: '/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id',
-                        SecurityGroupIds: 'sg-0676976675a94e49e',
-                        SubnetIds: ['subnet-075e204cb71470d70','subnet-0e64f859c59876536','subnet-0f02dd76225273efa'],
-                        VpcId: 'vpc-0f9779e69a780c25e'
-                    ],
-                ],
-            ],
     ],
 ]
 
