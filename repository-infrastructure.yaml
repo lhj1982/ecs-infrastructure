@@ -32,27 +32,6 @@ Parameters:
       The desired image name. This will be used as the name of the ECR repository if specified. Keep in mind that
       you are responsible for adding your team prefix if this template is being deployed via your team's ECS role, as
       IAM permissions for the team role are scoped to your team prefix for ECR.
-  RepoLifecyclePolicyText:
-    Type: String
-    Description: Stringified JSON of AWS LifeCyclePolicy rules that define under what circumstances repository images will be cleaned up
-    Default: |
-      {
-        "rules": [
-          {
-            "rulePriority": 10,
-            "description": "Deletes untagged images from the repo",
-            "selection": {
-              "tagStatus": "untagged",
-              "countType": "sinceImagePushed",
-              "countUnit": "days",
-              "countNumber": 1
-            },
-            "action": {
-              "type": "expire"
-            }
-          }
-        ]
-      }
 
 Conditions:
   ImageNamePresent: !Not [!Equals [!Ref ImageName, ""]]
@@ -65,8 +44,6 @@ Resources:
         - ImageNamePresent
         - !Ref ImageName
         - !Sub "${TeamPrefix}/${AppName}"
-      LifecyclePolicy:
-        LifecyclePolicyText: !Ref RepoLifecyclePolicyText
 
 Outputs:
   EcrRepositoryName:

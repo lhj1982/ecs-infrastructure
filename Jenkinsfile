@@ -53,7 +53,7 @@ def config = [
             ],
             cf: [
                 stackName: "webb-portal-ecs-cluster-infra-test",
-                templateFile: "new-cluster.yaml",
+                templateFile: "ec2-cluster.yaml",
                 parameters: [
                     ECSClusterName: 'webb-portal-frontend-cluster-test',
                     IamRoleInstanceProfile: 'arn:aws-cn:iam::439314357471:instance-profile/ecsInstanceRole',
@@ -61,6 +61,25 @@ def config = [
                     SecurityGroupIds: 'sg-0676976675a94e49e',
                     SubnetIds: 'subnet-075e204cb71470d70,subnet-0e64f859c59876536,subnet-0f02dd76225273efa',
                     VpcId: 'vpc-0f9779e69a780c25e'
+                ],   
+            ],    
+        ],
+        ecrInfrastructure: [
+            deployFlow: [
+                ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
+            ],
+            aws: [
+                role: "NIKE.cicd.tool",
+                roleAccount: "439314357471",
+                region: "cn-northwest-1",
+            ],
+            cf: [
+                stackName: "webb-portal-ecr-infra-test",
+                templateFile: "repository-infrastructure.yaml",
+                parameters: [
+                    TeamPrefix: 'gcantibots',
+                    AppName: 'webb-portal-frontend',
+                    ImageName: 'test',
                 ],   
             ],    
         ],
