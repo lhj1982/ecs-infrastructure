@@ -79,7 +79,7 @@ def config = [
                 parameters: [
                     TeamPrefix: 'gcantibots',
                     AppName: 'webb-portal-frontend',
-                    ImageName: 'test',
+                    ImageName: 'webb-portal-frontend-ecr',
                 ],   
             ],    
         ],
