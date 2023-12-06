@@ -24,6 +24,7 @@ def config = [
 
     deploymentEnvironment: [
         rolesInfrastructure: [
+            agentLabel: 'china',
             deployFlow: [
                 ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
             ],
@@ -43,6 +44,7 @@ def config = [
             ],
         ],
         clusterInfrastructure: [
+            agentLabel: 'china',
             deployFlow: [
                 ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
             ],
@@ -65,6 +67,7 @@ def config = [
             ],    
         ],
         ecrInfrastructure: [
+            agentLabel: 'china',
             deployFlow: [
                 ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
             ],
