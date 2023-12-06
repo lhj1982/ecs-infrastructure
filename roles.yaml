@@ -47,6 +47,8 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       RoleName: !Sub "${TeamPrefix}-BrewmasterEcsRole"
+      ManagedPolicyArns:
+        - !Sub 'arn:aws-cn:iam::aws:policy/EC2InstanceProfileForImageBuilderECRContainerBuilds'
       Policies:
         -
           PolicyName: CloudFormation
