@@ -63,8 +63,6 @@ Resources:
       MinSize: '1'
       MaxSize: '2'
       DesiredCapacity: '1'
-      TargetGroupARNs: 
-        - 'arn:aws-cn:elasticloadbalancing:cn-northwest-1:439314357471:targetgroup/Webb-F-Front-KF4EEZYWSPDY/cfcf118aca4d9d7c'
       LaunchTemplate:
         LaunchTemplateId: !Ref ECSLaunchTemplate
         Version: !GetAtt 
