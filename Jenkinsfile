@@ -23,7 +23,7 @@ def config = [
     qma: [ configFile: 'quality-config.yaml' ],
 
     deploymentEnvironment: [
-        rolesInfrastructure_test: [
+        rolesInfrastructureTest: [
             agentLabel: 'china',
             deployFlow: [
                 ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
@@ -43,7 +43,7 @@ def config = [
                 ]
             ],
         ],
-        clusterInfrastructure_test: [
+        clusterInfrastructureTest: [
             agentLabel: 'china',
             deployFlow: [
                 ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
@@ -66,7 +66,7 @@ def config = [
                 ],   
             ],    
         ],
-        ecrInfrastructure_test: [
+        ecrInfrastructureTest: [
             agentLabel: 'china',
             deployFlow: [
                 ECS_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
