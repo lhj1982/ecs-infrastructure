@@ -83,7 +83,7 @@ def config = [
                     ECSClusterName: 'webb-portal-frontend-cluster-test',
                     IamRoleInstanceProfile: 'arn:aws-cn:iam::439314357471:instance-profile/ecsInstanceRole',
                     LatestECSOptimizedAMI: '/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id',
-                    SecurityGroupIds: 'sg-06d639c179a1c0e50',
+                    SecurityGroupIds: 'sg-068ad6058ed04d8c9',
                     SubnetIds: 'subnet-0da1766492b750893,subnet-06da179024e04fbbd,subnet-05abf20a7b7d9cfac',
                     VpcId: 'vpc-0f9779e69a780c25e'
                 ],   
