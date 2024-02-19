@@ -82,7 +82,7 @@ def config = [
                 parameters: [
                     ECSClusterName: 'webb-portal-frontend-cluster-test',
                     IamRoleInstanceProfile: 'arn:aws-cn:iam::439314357471:instance-profile/ecsInstanceRole',
-                    LatestECSOptimizedAMI: '/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id',
+                    LatestECSOptimizedAMI: 'ami-0888136532e8458bb',
                     SecurityGroupIds: 'sg-068ad6058ed04d8c9',
                     SubnetIds: 'subnet-0da1766492b750893,subnet-06da179024e04fbbd,subnet-05abf20a7b7d9cfac',
                     VpcId: 'vpc-0f9779e69a780c25e'
@@ -105,7 +105,7 @@ def config = [
                 parameters: [
                     ECSClusterName: 'webb-portal-frontend-cluster-prod',
                     IamRoleInstanceProfile: 'arn:aws-cn:iam::439413396736:instance-profile/ecsInstanceRole',
-                    LatestECSOptimizedAMI: '/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id',
+                    LatestECSOptimizedAMI: 'ami-0888136532e8458bb',
                     SecurityGroupIds: 'sg-05dd79bfe6d170e26',
                     SubnetIds: 'subnet-0b23b05edb4035d28,subnet-054062238d2327b0e,subnet-07b7c0ab40a91ae55',
                     VpcId: 'vpc-01472d21bb792d03e'
