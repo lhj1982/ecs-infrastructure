@@ -96,8 +96,6 @@ Resources:
       Configuration:
         ExecuteCommandConfiguration:
           Logging: DEFAULT
-        ServiceConnectDefaults:
-          Namespace: test
       Tags: []
 
   EC2CapacityProvider:
