@@ -1,18 +1,20 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: The template used to create an ECS Cluster from the ECS Console.
+
 Parameters:
   ECSClusterName:
     Type: String
     Description: >-
-      Specifies the ECS Cluster Name with which the resources would be
-      associated
+      Specifies the ECS Cluster Name with which the resources would be associated
     Default: test
+
   SecurityGroupIds:
     Type: CommaDelimitedList
     Description: >-
       Optional - Specifies the Comma separated list of the Security Group Id of
       an existing Security Group.
     Default: ''
+
   VpcId:
     Type: String
     Description: >-
@@ -21,24 +23,28 @@ Parameters:
       existing subnets in that VPC. If you do not specify a VPC ID, a new VPC is
       created with at least 1 subnet.
     Default: ''
-    AllowedPattern: '^(?:vpc-[0-9a-f]{8,17}|)$'
+    AllowedPattern: '^(?:vpc-\[0-9a-f\]{8,17}|)$'
     ConstraintDescription: VPC Id must begin with 'vpc-' and have a valid uuid
+
   SubnetIds:
     Type: CommaDelimitedList
     Description: >-
       Optional - Specifies the Comma separated list of existing VPC Subnet Ids
       where ECS instances will run
     Default: ''
+
   LatestECSOptimizedAMI:
     Description: AMI ID
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     Default: /aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id
+
   IamRoleInstanceProfile:
     Type: String
     Description: >-
       Specifies the Name or the Amazon Resource Name (ARN) of the instance
       profile associated with the IAM role for the instance
     Default: 'arn:aws-cn:iam::439314357471:instance-profile/ecsInstanceRole'
+
 Resources:
   ECSLaunchTemplate:
     Type: 'AWS::EC2::LaunchTemplate'
@@ -50,32 +56,38 @@ Resources:
         InstanceType: c5.large
         IamInstanceProfile:
           Arn: !Ref IamRoleInstanceProfile
-        UserData: !Base64
-          'Fn::Sub':
-            - |-
-              #!/bin/bash 
-              echo ECS_CLUSTER=${ClusterName} >> /etc/ecs/ecs.config;
-            - ClusterName: !Ref ECSClusterName
+        UserData:
+          Fn::Base64:
+            !Sub
+              - |
+                #!/bin/bash
+                yum install -y aws-cfn-bootstrap
+                /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource ECSAutoScalingGroup --region ${AWS::Region}
+                echo ECS_CLUSTER=${ClusterName} >> /etc/ecs/ecs.config
+              - { ClusterName: !Ref ECSClusterName }
+
   ECSAutoScalingGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     DependsOn: ECSCluster
+    UpdatePolicy:
+      AutoScalingRollingUpdate:
+        MaxBatchSize: 1
+        MinInstancesInService: 1
+        PauseTime: PT15M
+        WaitOnResourceSignals: true
     Properties:
       MinSize: '1'
       MaxSize: '2'
       DesiredCapacity: '1'
       LaunchTemplate:
         LaunchTemplateId: !Ref ECSLaunchTemplate
-        Version: !GetAtt 
-          - ECSLaunchTemplate
-          - LatestVersionNumber
+        Version: !GetAtt ECSLaunchTemplate.LatestVersionNumber
       VPCZoneIdentifier: !Ref SubnetIds
       Tags:
         - Key: Name
           PropagateAtLaunch: true
-          Value: !Join 
-            - ' - '
-            - - ECS Instance
-              - !Ref ECSClusterName
+          Value: !Join [' ', ['ECS Instance', !Ref ECSClusterName]]
+
   ECSCluster:
     Type: 'AWS::ECS::Cluster'
     Properties:
@@ -86,9 +98,10 @@ Resources:
       Configuration:
         ExecuteCommandConfiguration:
           Logging: DEFAULT
-      ServiceConnectDefaults:
-        Namespace: test
+        ServiceConnectDefaults:
+          Namespace: test
       Tags: []
+
   EC2CapacityProvider:
     Type: 'AWS::ECS::CapacityProvider'
     Properties:
@@ -98,11 +111,12 @@ Resources:
           Status: ENABLED
           TargetCapacity: 100
         ManagedTerminationProtection: DISABLED
+
   ClusterCPAssociation:
     Type: 'AWS::ECS::ClusterCapacityProviderAssociations'
     DependsOn: ECSCluster
     Properties:
-      Cluster: !Ref ECSClusterName
+      Cluster: !Ref ECSCluster
       CapacityProviders:
         - FARGATE
         - FARGATE_SPOT
@@ -111,6 +125,7 @@ Resources:
         - Base: 0
           Weight: 1
           CapacityProvider: !Ref EC2CapacityProvider
+
 Outputs:
   ECSCluster:
     Description: The created cluster.
